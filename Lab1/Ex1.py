@@ -8,8 +8,17 @@ def ex1():
 
 
 def ex2():
-    pass
+    xSuma = 1.0
+    xProdus = 100
+    y = ex1()[0]
+    z = ex1()[0]
+    print("Suma e " + str((xSuma + y) + z == xSuma + (y + z)))
+    print("Produsul e " + str((xProdus * y) * z == xProdus * (y * z)))
 
 
 def ex3():
     pass
+
+
+print(ex1())
+ex2()
