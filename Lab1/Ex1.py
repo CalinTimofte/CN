@@ -1,6 +1,7 @@
 import math
 
-A = [[0,1,0,1],[1,0,0,1]]
+A = [[1,0,1,1,1,0,1,1], [1,0,1,1,1,0,1,1], [1,0,1,1,1,0,1,1], [1,0,1,1,1,0,1,1], [1,0,1,1,1,0,1,1], [1,0,1,1,1,0,1,1],
+     [1,0,1,1,1,0,1,1], [1,0,1,1,1,0,1,1]]
 B = [[0,0,0,1],[1,1,1,1]]
 
 def ex1():
@@ -23,22 +24,29 @@ def ex2():
 
 def ex3(matrix_A, matrix_B):
     n = len(matrix_A)
-    m = math.floor(math.log(n)) #nr total de (linii sau coloane)/matrice
+    m = math.floor(math.log(n)) #dimensiunea matricilor mici
     p = math.ceil(n/m) #nr total de matrici
 
 def slice_matrix_horizontally(B, m, p, n):
     return_matrixes = []
     for i in range(p):
         if i is not p - 1:
+            return_matrixes.append([])
             for j in range(m):
                     # referinta!!
-                    return_matrixes[i][j] = B[j+i]
+                    return_matrixes[i].append(B[j+(m*i)])
         else:
-            for j in range(m)
+            return_matrixes.append([])
+            for j in range(m*i, n):
+                return_matrixes[i].append(B[j])
+            if m*(i+1) != n:
+                for j in (n, m*(i+1)):
+                    return_matrixes[i].append([0 for x in range(n)])
+    return return_matrixes
 
 
 #
 # x = ex1()[0];
 # print((100*x) * x)
 # print(100 * (x * x))
-ex3(A,B)
+print(slice_matrix_horizontally(A, math.floor(math.log(len(A))), math.ceil(len(A)/(math.floor(math.log(len(A))))), len(A)))
