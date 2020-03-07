@@ -87,12 +87,13 @@ def ex3(matrix_A, matrix_B):
 
     # 3
     for i in range(1, p):
-        sum_linii_B.append([0 for contor in range(1, n)])
+        sum_linii_B = [[0 for contor in range(1, n)]]
         for j in range(1, 2 ** m - 1):
             k = int(math.log(j, 2))
             print(k)
-            sum_linii_B[j].append(sum_linii_B[j - 2 ** k] + anyB[i][k + 1])
-    print(sum_linii_B)
+            # trebuie facuta suma pe biti pentru vectori
+            sum_linii_B.append(sum_linii_B[j - (2 ** k)] & anyB[i][k + 1])
+            print(sum_linii_B)
     for i in range(1, p):
         for r in range(1, n):
             matrix_C[i].append(sum_linii_B[num(anyA[i][r])])
