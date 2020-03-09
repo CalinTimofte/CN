@@ -2,10 +2,23 @@ import math
 
 import numpy
 
-A = [[1, 0, 1, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1],
-     [1, 0, 1, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1],
-     [1, 0, 1, 1, 1, 0, 1, 1], [1, 0, 1, 1, 1, 0, 1, 1]]
-B = [[0, 0, 0, 1], [1, 1, 1, 1]]
+A = [[1, 0, 1, 1, 1, 0, 1, 1],
+     [0, 0, 0, 0, 0, 0, 0, 0],
+     [1, 1, 1, 1, 1, 1, 1, 1],
+     [1, 0, 0, 0, 0, 0, 0, 0],
+     [0, 1, 0, 0, 0, 0, 0, 0],
+     [0, 1, 0, 0, 0, 1, 0, 0],
+     [1, 0, 1, 1, 0, 0, 0, 0],
+     [1, 0, 0, 0, 0, 0, 0, 1]]
+
+B = [[1, 0, 1, 0, 1, 0, 1, 0],
+     [0, 1, 0, 1, 0, 1, 0, 1],
+     [1, 1, 1, 1, 1, 1, 1, 1],
+     [0, 0, 0, 0, 0, 0, 0, 0],
+     [1, 1, 1, 0, 1, 1, 1, 0],
+     [1, 0, 0, 1, 1, 0, 1, 1],
+     [1, 1, 0, 1, 1, 1, 1, 1],
+     [1, 0, 1, 1, 1, 0, 0, 0]]
 
 
 def ex1():
@@ -32,6 +45,25 @@ def num(vectorA):
         numerar = numerar * 10 + i
     return numerar
 
+def num_int(vector):
+    bin_num = num(vector)
+    return int(str(bin_num), 2)
+
+def byte_sum_list(list_1, list_2):
+    return_list = []
+    for i,j in zip(list_1, list_2):
+        return_list.append(i | j)
+    return return_list
+
+def matrix_sum(A, B):
+    return_matrix = []
+    current_line = []
+    for i in range(len(A)):
+        current_line.clear()
+        for j in range(len(A[i])):
+            current_line.append(A[i][j] | B[i][j])
+        return_matrix.append(current_line.copy())
+    return return_matrix
 
 def slice_matrix_vertically(A, m, p, n):
     return_matrixes = []
@@ -78,27 +110,38 @@ def ex3(matrix_A, matrix_B):
     n = len(matrix_A)
     m = math.floor(math.log(n))  # dimensiunea matricilor mici
     p = math.ceil(n / m)  # nr total de matrici
-    matrix_C = []
+    C_i_matrix_list = []
+    sum_linii_B = []
     # 1
-    anyA = (slice_matrix_vertically(matrix_A, m, p, n))
+    A_i_matrix_list = (slice_matrix_vertically(matrix_A, m, p, n))
 
     # 2
-    anyB = (slice_matrix_horizontally(matrix_B, m, p, n))
+    B_i_matrix_list = (slice_matrix_horizontally(matrix_B, m, p, n))
 
     # 3
-    for i in range(1, p):
-        sum_linii_B = [[0 for contor in range(1, n)]]
-        for j in range(1, 2 ** m - 1):
+    for i in range(p):
+        sum_linii_B.clear()
+        sum_linii_B.append([0 for contor in range(n)])
+        for j in range(1, (2 ** m)):
             k = int(math.log(j, 2))
-            print(k)
+            # print(k)
             # trebuie facuta suma pe biti pentru vectori
-            sum_linii_B.append(sum_linii_B[j - (2 ** k)] & anyB[i][k + 1])
-            print(sum_linii_B)
-    for i in range(1, p):
-        for r in range(1, n):
-            matrix_C[i].append(sum_linii_B[num(anyA[i][r])])
-    print(matrix_C)
+            sum_linii_B.append(byte_sum_list(sum_linii_B[j - (2 ** k)], B_i_matrix_list[i][k]))
+            # print(sum_linii_B)
+        C_i_matrix_list.append([])
+        for r in range(n):
+            C_i_matrix_list[i].append(sum_linii_B[num_int(A_i_matrix_list[i][r])].copy())
+    # for i in range(1, p):
+    #     for r in range(1, n):
+    #         matrix_C[i].append(sum_linii_B[num(anyA[i][r])])
+    # print(sum_linii_B[0][0])
+    # print(matrix_C)
     # 4
+    C = C_i_matrix_list[0]
+    for i in range(
+            1, len(C_i_matrix_list)):
+        C = matrix_sum(C, C_i_matrix_list[i])
+    return C
 
 
 #
@@ -111,4 +154,4 @@ def ex3(matrix_A, matrix_B):
 # print(slice_matrix_vertically(A, math.floor(math.log(len(A))), math.ceil(len(A) / (math.floor(math.log(len(A))))),
 #                              len(A)))
 
-ex3(A, A)
+print(ex3(A, B))
