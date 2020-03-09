@@ -38,26 +38,26 @@ def ex2():
     print("Suma e " + str((xSuma + y) + z == xSuma + (y + z)))
     print("Produsul e " + str((xProdus * y) * z == xProdus * (y * z)))
 
-
+# calculate NUM
 def num(vectorA):
     numerar = 0b0
     for i in reversed(vectorA):
         numerar = numerar * 10 + i
     return numerar
 
-
+# return NUM in int form
 def num_int(vector):
     bin_num = num(vector)
     return int(str(bin_num), 2)
 
-
+# bool sum between two lines (represented as lists)
 def byte_sum_list(list_1, list_2):
     return_list = []
-    for i, j in zip(list_1, list_2):
+    for i,j in zip(list_1, list_2):
         return_list.append(i | j)
     return return_list
 
-
+# sum of two matrixes
 def matrix_sum(A, B):
     return_matrix = []
     current_line = []
@@ -68,8 +68,7 @@ def matrix_sum(A, B):
         return_matrix.append(current_line.copy())
     return return_matrix
 
-
-# Functie pentru impartirea pe coloana
+# returns an array of matrixes (parts of A)
 def slice_matrix_vertically(A, m, p, n):
     return_matrixes = []
     return_matrixes_original = []
@@ -78,6 +77,7 @@ def slice_matrix_vertically(A, m, p, n):
         if i is not p - 1:
             return_matrixes.append([])
             for j in range(m):
+                # referinta!!
                 return_matrixes[i].append(transposeA[j + (m * i)])
         else:
             return_matrixes.append([])
@@ -91,14 +91,14 @@ def slice_matrix_vertically(A, m, p, n):
         return_matrixes_original.append(transposeMatrix)
     return return_matrixes_original
 
-
-# Functie pentru impartirea pe linie
+# returns an array of matrixes (parts of B)
 def slice_matrix_horizontally(B, m, p, n):
     return_matrixes = []
     for i in range(p):
         if i is not p - 1:
             return_matrixes.append([])
             for j in range(m):
+                # referinta!!
                 return_matrixes[i].append(B[j + (m * i)])
         else:
             return_matrixes.append([])
@@ -114,9 +114,8 @@ def ex3(matrix_A, matrix_B):
     n = len(matrix_A)
     m = math.floor(math.log(n))  # dimensiunea matricilor mici
     p = math.ceil(n / m)  # nr total de matrici
-    C_i_matrix_list = []
+    C_i_matrix_list = [] #list of C_i matrixes
     sum_linii_B = []
-    
     # 1
     A_i_matrix_list = (slice_matrix_vertically(matrix_A, m, p, n))
 
@@ -127,23 +126,25 @@ def ex3(matrix_A, matrix_B):
     for i in range(p):
         sum_linii_B.clear()
         sum_linii_B.append([0 for contor in range(n)])
+
+        # calculate sum_linii_B for B_i
         for j in range(1, (2 ** m)):
             k = int(math.log(j, 2))
             sum_linii_B.append(byte_sum_list(sum_linii_B[j - (2 ** k)], B_i_matrix_list[i][k]))
+
+        # compute C_i
         C_i_matrix_list.append([])
         for r in range(n):
             C_i_matrix_list[i].append(sum_linii_B[num_int(A_i_matrix_list[i][r])].copy())
 
     # 4
+    # compute C by summing C_i matrixes toghether
     C = C_i_matrix_list[0]
-    for i in range(
-            1, len(C_i_matrix_list)):
+    for i in range(1, len(C_i_matrix_list)):
         C = matrix_sum(C, C_i_matrix_list[i])
     return C
 
-
-# x = ex1()[0];
-# print((100*x) * x)
-# print(100 * (x * x))
-
+u,exponent = ex1()
+print(u)
+ex2()
 print(ex3(A, B))
