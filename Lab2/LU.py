@@ -1,38 +1,75 @@
-from builtins import range
 import numpy
-#determinare matrici L si U
+# determinare matrici L si U
 import scipy.linalg as la
 
 
-def LU(A,n):
-    #calculul elementelor liniei p din matricea U
-    U = [[0 for x in range(n)]
-         for y in range(n)]
-    L=[[0 for x in range(n)]
-       for y in range(n)]
+def descompunereLU(A, n):
     for p in range(n):
-        for i in range(p,n):
-            sum=0
+        # calculul elementelor liniei p din matricea U
+        for i in range(p, n):
+            sum = 0
             for k in range(p):
-                sum+= (L[p][k] * U[k][i])
-            U[p][i]= A[p][i] - sum
-        for i in range(p,n):
-            if p==i:
-                L[i][i]=1
+                sum += (A[p][k] * A[k][i])
+            A[p][i] = A[p][i] - sum
+        # calculul elementelor coloanei p din matricea L
+        for i in range(p, n):
+            if p == i:
+                continue
             else:
-                sum=0
+                sum = 0
                 for k in range(p):
-                    sum+= (L[i][k]*U[k][p])
-                if U[p][p]!=0:
-                    L[i][p] = (A[i][p] - sum) / U[p][p]
-    print(la.lu(A))
-
-#def ex1(n,epsilon, A, b):
-#    Ainit = A.copy()
-#    for i in range(n):
+                    sum += (A[i][k] * A[k][p])
+                if A[p][p] != 0:
+                    A[i][p] = (A[i][p] - sum) / A[p][p]
+    print(A)
 
 
-LU([[2, -1, -2],
-       [-4, 6, 3],
-       [-4, -2, 8]],3)
+def determinantALU(A, n):
+    detA = 1
+    for i in range(n):
+        detA *= A[i][i]
+    print(detA)
 
+
+# undone, completat cu cazurile A[i][i], precizia calculelor epsilon
+def calculare_solutieLU(A, n, b):
+    y = []
+    for i in range(n):
+        sum = 0
+        for j in range(i):
+            sum = sum + A[i][j] * y[j]
+        y.append((b[i] - sum) / A[i][i])
+    x = numpy.zeros(n)
+    for i in reversed(range(n)):
+        sum = 0
+        for j in range(i + 1, n):
+            sum = sum + A[i][j] * x[j]
+        x[i] = (y[i] - sum) / A[i][i]
+    return x
+
+
+#to do
+def calcul_norma(A,n,b,x):
+    # a init * x = y
+    # y - b init = z
+    sum = 0
+    for i in range(n):
+        sum += z[i]**2
+    norma = sum ** 1/2
+
+
+#to do
+def inversa_matricii:
+
+def tema2(A, n, b):
+    Ainit = A.copy()
+    binit = b.copy()
+    descompunereLU(A, n)
+    determinantALU(A, n)
+    x=calculare_solutieLU(A,n,b)
+    calculare_solutieLU(Ainit, n, binit, x)
+
+
+tema2([[2.5, 2, 2],
+       [5, 6, 5],
+       [5, 6, 6.5]], 3, [2, 2, 2])
