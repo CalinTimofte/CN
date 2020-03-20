@@ -92,9 +92,9 @@ def done_with_libraries(A, n, b, xLU):
     print("Solutia ecuatiei folosind libraria numpy: " + str(xlib) + "\n")
     Ainv = numpy.linalg.inv(A)
     print("A invers folosind libraria numpy: \n" + str(Ainv) + "\n")
-    print("Verificare norma ||xLU - xlib||2: " + str(numpy.linalg.norm(xLU - xlib)) + "\n")
+    print("Verificare norma ||xLU - xlib||2: " + str(numpy.linalg.norm(xLU - xlib,2)) + "\n")
     print(
-        "Verificare cu norma ||xLU - A inv lib * b init||2: " + str(numpy.linalg.norm(xLU - numpy.dot(Ainv, b))) + "\n")
+        "Verificare cu norma ||xLU - A inv lib * b init||2: " + str(numpy.linalg.norm(xLU - numpy.dot(Ainv, b),2)) + "\n")
 
 
 # 6 determinare inversul matricii
@@ -105,22 +105,14 @@ def inversa_matricii(A, n, Ainit):
         e[i] = 1
         xstar = calculare_solutieLU(A, n, e)
         for j in range(n):
-            Ainv[j][i] = round(xstar[j], 5)
+            Ainv[j][i] = xstar[j]
     print("Inversa calculata este: ")
     for i in range(n):
         print(Ainv[i])
     print("\n")
     Alibinv = numpy.linalg.inv(Ainit)
-    sumlist = []
-    for i in range(n):
-        sum = 0
-        for j in range(n):
-            if Ainv[i][j] > Alibinv[i][j]:
-                sum += (Ainv[i][j] - Alibinv[i][j])
-            else:
-                sum += (Alibinv[i][j] - Ainv[i][j])
-        sumlist.append(sum)
-    C = max(sumlist)
+    print("Inversa de la numpy: \n" + str(Alibinv) + "\n")
+    C = numpy.linalg.norm(abs(Ainv - Alibinv),1)
     return C
 
 
