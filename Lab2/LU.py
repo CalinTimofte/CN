@@ -1,3 +1,5 @@
+import copy
+
 import numpy
 import scipy.linalg as la
 
@@ -22,7 +24,6 @@ def descompunereLU(A, n):
                     sum += (A[i][k] * A[k][p])
                 if A[p][p] != 0:
                     A[i][p] = (A[i][p] - sum) / A[p][p]
-    print(A)
 
 
 # 2 determinant A with L, U
@@ -31,7 +32,7 @@ def determinantALU(A, n):
     detA = 1
     for i in range(n):
         detA *= A[i][i]
-    print(detA)
+    return detA
 
 
 # 3 cautare solutie sistem de ecuatie
@@ -42,11 +43,11 @@ def calculare_solutieLU(A, n, b):
         sum = 0
         for j in range(i):
             sum = sum + A[i][j] * y[j]
-        y.append((b[i] - sum) / A[i][i])
+        y.append((b[i] - sum))
     x = numpy.zeros(n)
     for i in reversed(range(n)):
         sum = 0
-        for j in range(i + 1, n):
+        for j in range(i-1,n):
             sum = sum + A[i][j] * x[j]
         x[i] = (y[i] - sum) / A[i][i]
     return x
@@ -60,7 +61,7 @@ def calcul_norma(A, n, b, x):
     for i in range(n):
         sum = 0
         for j in range(n):
-            sum += A[i][j] + x[j]
+            sum += A[i][j] * x[j]
         y.append(sum)
 
     # y - b init = z
@@ -71,52 +72,59 @@ def calcul_norma(A, n, b, x):
     sum = 0
     for i in range(n):
         sum += y[i] ** 2
-    norma = sum ** 1 / 2
+    norma = sum ** (1 / 2)
     return norma
 
 
 # 5 solutia sistemului si inversa matricii folosind lib
+# done, don't think there is anything to check :)))
 def done_with_libraries(A, n, b, xLU):
     xlib = numpy.linalg.solve(A, b)
+    print("Solutia ecuatiei folosind libraria numpy: " + str(xlib) + "\n")
     Ainv = numpy.linalg.inv(A)
-    print(numpy.linalg.norm(xLU - xlib))
-    print(numpy.linalg.norm(xLU - numpy.dot(Ainv, b)))
+    print("A invers folosind libraria numpy: \n" + str(Ainv) + "\n")
+    print("Verificare norma ||xLU - xlib||2: " + str(numpy.linalg.norm(xLU - xlib)) + "\n")
+    print("Verificare cu norma ||xLU - A inv lib * b init||2: " + str(numpy.linalg.norm(xLU - numpy.dot(Ainv, b))) + "\n")
 
 
 # 6 determinare inversul matricii
-# done, but the result is wrong -> cautare solutie wrong
-def inversa_matricii(A, n):
+def inversa_matricii(A, n, Ainit):
     Ainv = [[0 for x in range(n)] for y in range(n)]
     for i in range(n):
-        e = [0 for i in range(n)]
+        e = [0 for j in range(n)]
         e[i] = 1
         xstar = calculare_solutieLU(A, n, e)
         for j in range(n):
             Ainv[i][j] = xstar[j]
-    Alibinv = numpy.linalg.inv(A)
+    Alibinv = numpy.linalg.inv(Ainit)
     sumlist = []
     for i in range(n):
         sum = 0
         for j in range(n):
-            sum += (Ainv[i][j] - Alibinv[i][j])
+            if Ainv[i][j] - Alibinv[i][j] <0:
+                sum += (Ainv[i][j] - Alibinv[i][j]) *(-1)
+            else:
+                sum += (Ainv[i][j] - Alibinv[i][j])
         sumlist.append(sum)
     C = max(sumlist)
     return C
 
 
-def tema2(A, b):
+def tema2(A, b, Ainit):
     n = len(A)
-    print(n)
-    Ainit = A.copy()
-    binit = b.copy()
-    # descompunereLU(A, n)
-    # determinantALU(A, n)
-    x = calculare_solutieLU(A, n, b)
-    # calcul_norma(Ainit, n, binit, x)
-    done_with_libraries(A, n, b, x)
-    inversa_matricii(A, n)
+    binit = copy.deepcopy(b)
+    print("A initial: " + str(A) + "\n")
+    print("A dupa descompunere LU: " + str(descompunereLU(A, n)) + "\n")
+    print("Determinant A: " + str(determinantALU(A, n)) + "\n")
+    print("Solutia sistemului folosind LU: " + str(calculare_solutieLU(A,n,b)) + "\n")
+    x = calculare_solutieLU(A,n,b)
+    print("Norma calculata este: " + str(calcul_norma(Ainit, n, binit, x)) + "\n")
+    done_with_libraries(Ainit, n, binit, x)
+    print(inversa_matricii(A, n, Ainit))
 
-
-tema2([[2.5, 2, 2],
+A=[[2.5, 2, 2],
        [5, 6, 5],
-       [5, 6, 6.5]], [2, 2, 2])
+       [5, 6, 6.5]]
+b = [2,2,2]
+Ainit = copy.deepcopy(A)
+tema2(A, b, Ainit)
