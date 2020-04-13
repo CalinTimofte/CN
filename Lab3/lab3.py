@@ -1,5 +1,7 @@
 import copy
+epsilon = 0.00000001
 
+# cel mult 11 elem
 def store_matrix(filename):
     first = True
     with open(filename, 'r') as matrix:
@@ -20,9 +22,13 @@ def store_matrix(filename):
                         not_found = False
                 if not_found:
                     vector[i].append((el, j))
-    return(vector)
+    for i in vector:
+        if len(i) > 11:
+            raise ValueError('Too many elements per line!')
+    return vector
 
-def matrix_sum(a,b):
+
+def matrix_sum(a, b):
     sum_vector = copy.deepcopy(a)
     for line_num, i in enumerate(b):
         for j in i:
@@ -36,7 +42,8 @@ def matrix_sum(a,b):
                 sum_vector[line_num].append(j)
     return sum_vector
 
-def matrix_product(a,b):
+
+def matrix_product(a, b):
     b_column_matrix = {n: [] for n in range(len(b))}
     for line_num, i in enumerate(b):
         for j in i:
@@ -54,23 +61,27 @@ def matrix_product(a,b):
                 product_matrix[line_num].append((product_elem, col_number_b))
     return product_matrix
 
-def compare_vectors(a,b):
+
+def compare_vectors(a, b):
     for line_num, i in enumerate(a):
         for j in i:
             not_found = True
             for tup in b[line_num]:
-                if tup == j:
-                    not_found = False
-                    break
+                if tup[1] == j[1]:
+                    if abs(tup[0] - j[0]) < epsilon:
+                        not_found = False
+                        break
             if not_found:
                 return False
     return True
 
-a = store_matrix("a.txt")
-b = store_matrix("b.txt")
-sum = matrix_sum(a, b)
-check_sum = store_matrix("sum.txt")
-prod = matrix_product(a, b)
-check_prod = store_matrix("prod.txt")
-print(prod)
-print(compare_vectors(prod, check_prod))
+
+# a = store_matrix("a.txt")
+# b = store_matrix("b.txt")
+# print(a)
+# sum = matrix_sum(a, b)
+# check_sum = store_matrix("sum.txt")
+# print(compare_vectors(sum, check_sum))
+# prod = matrix_product(a, b)
+# check_prod = store_matrix("prod.txt")
+# print(compare_vectors(prod, check_prod))
