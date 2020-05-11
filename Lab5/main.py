@@ -201,7 +201,7 @@ def punctul2():
     print_func("a2020.txt")
 
 def punctul3():
-    A = numpy.random.rand(50,100)
+    A = numpy.random.rand(50,50)
 
     SVD = numpy.linalg.svd(A)
     singular_values = SVD[1]
@@ -222,11 +222,20 @@ def punctul3():
     print()
 
     # solving the system
-    # b = numpy.random.rand(50)
-    # x = numpy.linalg.solve(A, b)
-    # I = numpy.linalg.inv(A)
-    # print(I)
-    #incomplete for now
+    b = numpy.random.rand(50)
+    x = numpy.linalg.solve(A, b)
+    norma = numpy.linalg.norm(b-A.dot(x),2)
+    print(norma)
+    print()
+
+    Ainv = numpy.matmul(numpy.transpose(A),A)
+    Ainv = numpy.linalg.inv(Ainv)
+    PSM = numpy.matmul(Ainv, numpy.transpose(A))
+    PSMnorm = numpy.linalg.norm(numpy.subtract(numpy.linalg.pinv(A) , PSM), 1)
+    print(PSMnorm)
+    print()
+
+
 
 punctul2()
 # punctul3()
