@@ -90,6 +90,6 @@ def gauss_sindel(matrix, vector):
 
 
 
-a = keep_matrix("a5.txt")
-b = keep_vector("b5.txt")
+a = keep_matrix("a2.txt")
+b = keep_vector("b2.txt")
 print(gauss_sindel(a, b))
